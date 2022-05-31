@@ -13,13 +13,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 //        SocialMediaIntegration.shared.googleLogin.delegate = self
-        SocialMediaIntegration.shared.setupAppDelegateLaunchingOptions(application: application, didFinishLaunchingWithOptions: launchOptions)
+        FacebookService.shared.setupAppDelegate(application: application, launchOptions: launchOptions)
+        GoogleService.shared.setupAppDelegate()
         return true
     }
 
     // MARK: UISceneSession Lifecycle
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool{
-        return SocialMediaIntegration.shared.setupAppDelegateURL(app: app, url: url, options: options)
+        return SocialMediaURLOptions(app, open: url, options: options)
+    }
+    
+    func SocialMediaURLOptions(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool{
+        FacebookService.shared.setupURLOptions(app: app, url: url, options: options) || GoogleService.shared.setupUrlOptions(url: url) || TwitterService.shared.setupAppDelegateURLOptions(url: url)
     }
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {

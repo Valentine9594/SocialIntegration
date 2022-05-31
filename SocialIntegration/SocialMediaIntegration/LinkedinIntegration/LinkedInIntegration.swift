@@ -9,7 +9,11 @@ import UIKit
 import WebKit
 
 class LinkedInIntegration: NSObject{
-    var presentingViewController: UIViewController!
+    var presentingViewController: UIViewController?
+    
+    private override init() {
+        
+    }
     
     func setupAppDelegateURLOptions(url: URL) -> Bool{
 //        if String(url) == LinkedInConstants.redirect_url{
@@ -56,11 +60,11 @@ class LinkedInIntegration: NSObject{
             navController.modalPresentationStyle = UIModalPresentationStyle.overFullScreen
             navController.modalTransitionStyle = .coverVertical
 
-            presentingViewController.present(navController, animated: true, completion: nil)
+            presentingViewController?.present(navController, animated: true, completion: nil)
         }
     
         @objc func cancelAction() {
-            presentingViewController.dismiss(animated: true, completion: nil)
+            presentingViewController?.dismiss(animated: true, completion: nil)
         }
 
         @objc func refreshAction() {
@@ -136,7 +140,7 @@ class LinkedInIntegration: NSObject{
                     print("LinkedIn Email: \(linkedinEmail ?? "")")
 
                     DispatchQueue.main.async {
-                        self.presentingViewController.performSegue(withIdentifier: "detailseg", sender: self)
+                        self.presentingViewController?.performSegue(withIdentifier: "detailseg", sender: self)
                     }
                 }
             }
@@ -154,7 +158,7 @@ extension LinkedInIntegration: WKNavigationDelegate {
         //Close the View Controller after getting the authorization code
         if let urlStr = navigationAction.request.url?.absoluteString {
             if urlStr.contains("?code=") {
-                self.presentingViewController.dismiss(animated: true, completion: nil)
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
             }
         }
         decisionHandler(.allow)

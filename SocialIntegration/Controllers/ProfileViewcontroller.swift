@@ -31,9 +31,16 @@ class ProfileViewController: UIViewController {
         mobileNoLabel.text = "Mobile No.: \(userModel?.mobileNo ?? notKnown)"
         idLabel.text = "ID: \(userModel?.id ?? notKnown)"
         
-//        profileImageView.layer.cornerRadius = profileImageView.frame.width/2
+//        profileImageView.layer.cornerRadius = profileImageView.frame.size.width * 0.5
         profileImageView.layer.borderColor = UIColor.systemIndigo.cgColor
         profileImageView.layer.borderWidth = 2
         profileImageView.clipsToBounds = true
+        
+        if let urlString = userModel?.profileImageURL, let profileImageURL = URL(string: urlString){
+            if let data = try? Data(contentsOf: profileImageURL){
+                let image = UIImage(data: data)
+                profileImageView.image = image
+            }
+        }
     }
 }
