@@ -20,10 +20,10 @@ class ViewController: UIViewController {
     lazy var googleService: IGoogleService = GoogleService.shared
     lazy var appleService: IAppleService = AppleService.shared
     lazy var twitterService: ITwitterService = TwitterService.shared
+    lazy var linkedInService: ILinkedInService = LinkedInService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         setupUI()
 //        setupIFAlreadyLoggedIn()
     }
@@ -78,7 +78,12 @@ class ViewController: UIViewController {
     
     
     @IBAction func clickedLinkedInLoginButton(_ sender: UIButton) {
-        LinkedInIntegration.shared.linkedInAuthVC()
+        linkedInService.login(viewController: self) { [weak self] userModel, error in
+            guard self != nil else { return }
+            if let user = userModel{
+                self?.navigateToProfileViewController(userModel: user)
+            }
+        }
     }
     
     @IBAction func clickedTwitterLoginButton(_ sender: UIButton) {
