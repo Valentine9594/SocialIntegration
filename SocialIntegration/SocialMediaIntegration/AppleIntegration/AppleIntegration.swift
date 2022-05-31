@@ -20,6 +20,10 @@ class AppleIntegration: NSObject{
     
     static let shared = AppleIntegration()
     
+    private override init(){
+        
+    }
+    
     func signInWithApple(viewController: UIViewController) -> ASAuthorizationAppleIDButton{
         let authorizationButton = ASAuthorizationAppleIDButton()
         authorizationButton.addTarget(viewController, action: #selector(handleAppleIdRequest), for: .touchUpInside)
