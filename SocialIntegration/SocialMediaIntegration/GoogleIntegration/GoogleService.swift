@@ -43,11 +43,16 @@ class GoogleService: NSObject, IGoogleService{
     
     func logout() {
         googleManager.signOut()
+        clearCookie()
     }
     
     func fetchUserInfo(completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void) {
         if let user = googleManager.currentUser{
-            let userModel = UserModel(id: user.userID, firstName: user.profile.givenName, lastName: user.profile.familyName, email: user.profile.email, mobileNo: nil, profileImageURL: nil)
+            var imageURL: URL?
+            if user.profile.hasImage{
+                imageURL = user.profile.imageURL(withDimension: 200)
+            }
+            let userModel = UserModel(id: user.userID, firstName: user.profile.givenName, lastName: user.profile.familyName, email: user.profile.email, mobileNo: nil, profileImageURL: imageURL?.absoluteString)
             completion(userModel, nil)
         }
         completion(nil, .loginFailed)

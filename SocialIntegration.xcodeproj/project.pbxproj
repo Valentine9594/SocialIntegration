@@ -13,6 +13,8 @@
 		4A721AF92840E62100DEB231 /* LinkedInModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A721AF82840E62100DEB231 /* LinkedInModels.swift */; };
 		4AC9284E2845E96C009D0838 /* TwitterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC9284D2845E96C009D0838 /* TwitterService.swift */; };
 		4AC92850284632F0009D0838 /* LinkedInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC9284F284632F0009D0838 /* LinkedInService.swift */; };
+		4ACF475F28476855009487C1 /* FacebookModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF475E28476855009487C1 /* FacebookModels.swift */; };
+		4ACF47622847862D009487C1 /* UIViewcontroller+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF47612847862D009487C1 /* UIViewcontroller+extensions.swift */; };
 		4AE01702284200A000C04C8D /* TwitterModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE01701284200A000C04C8D /* TwitterModels.swift */; };
 		92730CCE283E0216002B0ED8 /* ProfileViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92730CCD283E0216002B0ED8 /* ProfileViewcontroller.swift */; };
 		92730CD3283E74E6002B0ED8 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92730CD2283E74E6002B0ED8 /* Models.swift */; };
@@ -35,6 +37,8 @@
 		4A721AF82840E62100DEB231 /* LinkedInModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedInModels.swift; sourceTree = "<group>"; };
 		4AC9284D2845E96C009D0838 /* TwitterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterService.swift; sourceTree = "<group>"; };
 		4AC9284F284632F0009D0838 /* LinkedInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedInService.swift; sourceTree = "<group>"; };
+		4ACF475E28476855009487C1 /* FacebookModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookModels.swift; sourceTree = "<group>"; };
+		4ACF47612847862D009487C1 /* UIViewcontroller+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewcontroller+extensions.swift"; sourceTree = "<group>"; };
 		4AE01701284200A000C04C8D /* TwitterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterModels.swift; sourceTree = "<group>"; };
 		8E531B7511FC000DE650D936 /* Pods-SocialIntegration.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocialIntegration.debug.xcconfig"; path = "Target Support Files/Pods-SocialIntegration/Pods-SocialIntegration.debug.xcconfig"; sourceTree = "<group>"; };
 		92730CCD283E0216002B0ED8 /* ProfileViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewcontroller.swift; sourceTree = "<group>"; };
@@ -73,6 +77,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4ACF476028478607009487C1 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4ACF47612847862D009487C1 /* UIViewcontroller+extensions.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
 		76E84661B23B35F9978EFF58 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +109,7 @@
 				92730CD2283E74E6002B0ED8 /* Models.swift */,
 				4A721AF82840E62100DEB231 /* LinkedInModels.swift */,
 				4AE01701284200A000C04C8D /* TwitterModels.swift */,
+				4ACF475E28476855009487C1 /* FacebookModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -152,6 +165,7 @@
 		92FC56DA283B5C1600EB536A /* SocialIntegration */ = {
 			isa = PBXGroup;
 			children = (
+				4ACF476028478607009487C1 /* extensions */,
 				92730CDA283FA933002B0ED8 /* SocialMediaIntegration */,
 				92730CD4283F5857002B0ED8 /* Constants */,
 				92730CD1283E74D3002B0ED8 /* Models */,
@@ -342,6 +356,7 @@
 				4A40D3FE2845069A005D4123 /* AppleService.swift in Sources */,
 				92FC56E0283B5C1600EB536A /* ViewController.swift in Sources */,
 				4A40D3FA2844C62E005D4123 /* FacebookService.swift in Sources */,
+				4ACF475F28476855009487C1 /* FacebookModels.swift in Sources */,
 				4AC9284E2845E96C009D0838 /* TwitterService.swift in Sources */,
 				4AE01702284200A000C04C8D /* TwitterModels.swift in Sources */,
 				92730CCE283E0216002B0ED8 /* ProfileViewcontroller.swift in Sources */,
@@ -350,6 +365,7 @@
 				92FC56DE283B5C1600EB536A /* SceneDelegate.swift in Sources */,
 				92FC56F5283B91E200EB536A /* AppleIntegration.swift in Sources */,
 				4A40D3FC2844E185005D4123 /* GoogleService.swift in Sources */,
+				4ACF47622847862D009487C1 /* UIViewcontroller+extensions.swift in Sources */,
 				92730CD3283E74E6002B0ED8 /* Models.swift in Sources */,
 				92730CD6283F586D002B0ED8 /* Constants.swift in Sources */,
 				4AC92850284632F0009D0838 /* LinkedInService.swift in Sources */,
@@ -499,15 +515,19 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SocialIntegration/SocialIntegration.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SocialIntegration/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -515,6 +535,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = NeosoftTechnologies.SocialIntegration;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -528,15 +549,19 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SocialIntegration/SocialIntegration.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SocialIntegration/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -544,6 +569,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = NeosoftTechnologies.SocialIntegration;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

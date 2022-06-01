@@ -14,3 +14,13 @@ enum SocialSignInType{
     case apple
     case linkedIn
 }
+
+func clearCookie (){
+    URLCache.shared.removeAllCachedResponses()
+    // Delete any associated cookies
+    if let cookies = HTTPCookieStorage.shared.cookies {
+        for cookie in cookies {
+            HTTPCookieStorage.shared.deleteCookie(cookie)
+        }
+    }
+}

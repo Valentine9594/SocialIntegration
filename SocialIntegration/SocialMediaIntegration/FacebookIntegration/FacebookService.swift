@@ -70,17 +70,6 @@ class FacebookService: IFacebookService{
         })
     }
     
-    private func clearCookie (){
-        URLCache.shared.removeAllCachedResponses()
-        // Delete any associated cookies
-        if let cookies = HTTPCookieStorage.shared.cookies {
-            for cookie in cookies {
-                HTTPCookieStorage.shared.deleteCookie(cookie)
-            }
-        }
-    }
-
-    
     func getUserInfo(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         let requestFields = ["fields": "first_name, last_name, picture.type(large), email, id, gender, name"]
         let request = GraphRequest(graphPath: "me", parameters: requestFields, tokenString: getAccessToken(), version: nil, httpMethod: .get)
@@ -88,9 +77,16 @@ class FacebookService: IFacebookService{
             if error != nil{
                  completion(nil, .graphAPIFailed)
             } else {
-                let userInfo    = result as! [String:Any]
+//                if let res = result as? Data{
+//                    let userInfoModel = try? JSONDecoder().decode(FacebookModel.self, from: res)
+//                    debugPrint("UserInfo Full: \(userInfoModel)")
+//                }
+                let userInfo = result as! [String:Any]
+                let userPic = userInfo["picture"] as! [String:Any]
+                let userPicData = userPic["data"] as! [String:Any]
+//                debugPrint("UserInfo: \(userPic["data"])")
                 if let email = userInfo["email"] as? String {
-                    let userModelRecieved = UserModel(id: userInfo["id"] as? String, firstName: userInfo["first_name"] as? String, lastName: userInfo["last_name"] as? String, email: email, mobileNo: nil, profileImageURL: userInfo["picture.type(large)"] as? String)
+                    let userModelRecieved = UserModel(id: userInfo["id"] as? String, firstName: userInfo["first_name"] as? String, lastName: userInfo["last_name"] as? String, email: email, mobileNo: nil, profileImageURL: userPicData["url"] as? String)
                          completion(userModelRecieved, nil)
                 }
                 else {
@@ -102,6 +98,7 @@ class FacebookService: IFacebookService{
     }
         func logout() {
             loginManager.logOut()
+            clearCookie()
         }
     
     func getAccessToken() -> String?{

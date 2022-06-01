@@ -42,10 +42,11 @@ class ViewController: UIViewController {
         self.setLoginButtonTitle(loginButton: googleLoginButton, loginButtonName: "Google", showLogin: !googleService.isSignedIn())
         self.setLoginButtonTitle(loginButton: twitterLoginButton, loginButtonName: "Twitter", showLogin: !twitterService.isUserSignedIn())
         self.setLoginButtonTitle(loginButton: appleLoginButton, loginButtonName: "Apple", showLogin: !appleService.isUserSignedIn())
-        self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: (linkedInService.userAccessToken() == nil))
+        self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: true)
     }
     
     @IBAction func clickedAppleLogin(_ sender: UIButton) {
+        debugPrint("User Signed In: \(appleService.isUserSignedIn())")
         appleService.login(viewController: self) { [weak self] userModel, error in
             guard self != nil else{ return }
             if let user = userModel {
@@ -78,19 +79,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clickedLinkedInLoginButton(_ sender: UIButton) {
-        if linkedInService.userAccessToken() != nil{
-            linkedInService.logout()
-            self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: true)
-        }
-        else{
             linkedInService.login(viewController: self) { [weak self] userModel, error in
                 guard self != nil else { return }
                 if let user = userModel{
-                    self?.setLoginButtonTitle(loginButton: self?.linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: false)
+//                    self?.setLoginButtonTitle(loginButton: self?.linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: false)
                     self?.navigateToProfileViewController(userModel: user)
                 }
             }
-        }
     }
     
     @IBAction func clickedTwitterLoginButton(_ sender: UIButton) {

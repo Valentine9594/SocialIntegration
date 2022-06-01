@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple</key>
+	<true/>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -54,7 +56,7 @@
 	<key>FacebookClientToken</key>
 	<string>3631021cf98256f24e97780449f23e0</string>
 	<key>FacebookDisplayName</key>
-	<string>SocialIntegration</string>
+	<string>FALSE</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -82,5 +84,9 @@
 			</array>
 		</dict>
 	</dict>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>
