@@ -42,6 +42,7 @@ class ViewController: UIViewController {
         self.setLoginButtonTitle(loginButton: googleLoginButton, loginButtonName: "Google", showLogin: !googleService.isSignedIn())
         self.setLoginButtonTitle(loginButton: twitterLoginButton, loginButtonName: "Twitter", showLogin: !twitterService.isUserSignedIn())
         self.setLoginButtonTitle(loginButton: appleLoginButton, loginButtonName: "Apple", showLogin: !appleService.isUserSignedIn())
+        self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: (linkedInService.userAccessToken() == nil))
     }
     
     @IBAction func clickedAppleLogin(_ sender: UIButton) {
@@ -76,12 +77,18 @@ class ViewController: UIViewController {
         }
     }
     
-    
     @IBAction func clickedLinkedInLoginButton(_ sender: UIButton) {
-        linkedInService.login(viewController: self) { [weak self] userModel, error in
-            guard self != nil else { return }
-            if let user = userModel{
-                self?.navigateToProfileViewController(userModel: user)
+        if linkedInService.userAccessToken() != nil{
+            linkedInService.logout()
+            self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: true)
+        }
+        else{
+            linkedInService.login(viewController: self) { [weak self] userModel, error in
+                guard self != nil else { return }
+                if let user = userModel{
+                    self?.setLoginButtonTitle(loginButton: self?.linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: false)
+                    self?.navigateToProfileViewController(userModel: user)
+                }
             }
         }
     }
@@ -138,18 +145,22 @@ class ViewController: UIViewController {
      }
     
     private func navigateToProfileViewController(userModel: UserModel?){
-        let profileViewControllerStoryBoardID = "ProfileViewController"
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let profileViewController = storyboard.instantiateViewController(withIdentifier: profileViewControllerStoryBoardID) as! ProfileViewController
-        profileViewController.userModel = userModel
-            self.navigationController?.pushViewController(profileViewController, animated: true)
+        DispatchQueue.main.async {
+            let profileViewControllerStoryBoardID = "ProfileViewController"
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let profileViewController = storyboard.instantiateViewController(withIdentifier: profileViewControllerStoryBoardID) as! ProfileViewController
+            profileViewController.userModel = userModel
+                self.navigationController?.pushViewController(profileViewController, animated: true)
+        }
     }
     
     private func displayError(message: String?){
-        let alertController = UIAlertController(title: "Alert!", message: message, preferredStyle: .alert)
-        let alertAction = UIAlertAction(title: "OK", style: .default)
-        alertController.addAction(alertAction)
-        self.present(alertController, animated: false)
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Alert!", message: message, preferredStyle: .alert)
+            let alertAction = UIAlertAction(title: "OK", style: .default)
+            alertController.addAction(alertAction)
+            self.present(alertController, animated: false)
+        }
     }
 }
 

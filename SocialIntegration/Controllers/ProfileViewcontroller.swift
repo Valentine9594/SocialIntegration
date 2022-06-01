@@ -31,6 +31,12 @@ class ProfileViewController: UIViewController {
         mobileNoLabel.text = "Mobile No.: \(userModel?.mobileNo ?? notKnown)"
         idLabel.text = "ID: \(userModel?.id ?? notKnown)"
         
+        idLabel.numberOfLines = 0
+        idLabel.lineBreakMode = .byWordWrapping
+        
+        emailLabel.numberOfLines = 0
+        emailLabel.lineBreakMode = .byCharWrapping
+        
 //        profileImageView.layer.cornerRadius = profileImageView.frame.size.width * 0.5
         profileImageView.layer.borderColor = UIColor.systemIndigo.cgColor
         profileImageView.layer.borderWidth = 2

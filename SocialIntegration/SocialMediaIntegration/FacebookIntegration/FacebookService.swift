@@ -41,7 +41,7 @@ class FacebookService: IFacebookService{
     }
         
     func setupAppDelegate(application: UIApplication, launchOptions: [UIApplication.LaunchOptionsKey: Any]?){
-        _ = FBLoginButton.self
+//        _ = FBLoginButton.self
         ApplicationDelegate.shared.application(application,  didFinishLaunchingWithOptions: launchOptions)
     }
     
@@ -57,8 +57,6 @@ class FacebookService: IFacebookService{
     func login(fromViewController viewController: UIViewController,
                completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         clearCookie()
-        let loginManager = LoginManager()
-        loginManager.logOut()
         loginManager.logIn(permissions: ["public_profile", "email"], from: viewController, handler: {(loginResult, error) in
             if error != nil {
                 completion(nil, SocialMediaServiceError.loginFailed)
