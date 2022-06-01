@@ -13,12 +13,13 @@ protocol ILinkedInService{
     func login(viewController: UIViewController, completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
     func logout()
     func fetchUserData(completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
-    func userDidSignIn() -> Bool
+    func userAccessToken() -> String?
 }
 
 class LinkedInService: NSObject, ILinkedInService{
     static let shared = LinkedInService()
     private var presentingViewController: UIViewController?
+    private var completionHandler: ((UserModel?, SocialMediaServiceError?) -> Void)?
     
     private override init(){
         super.init()
@@ -38,6 +39,7 @@ class LinkedInService: NSObject, ILinkedInService{
 
         let navController = popUpViewControllerInNavigationController(presentingViewController: viewController, linkedInVC: linkedInVC)
         viewController.present(navController, animated: true, completion: nil)
+        self.completionHandler = completion
     }
     
     private func popUpViewControllerWebView(linkedInVC: UIViewController) -> WKWebView{
@@ -69,11 +71,11 @@ class LinkedInService: NSObject, ILinkedInService{
         return navController
     }
     
-    @objc func cancelAction() {
+    @objc private func cancelAction() {
             self.presentingViewController?.dismiss(animated: true, completion: nil)
         }
 
-    @objc func refreshAction() {
+    @objc private func refreshAction() {
             (self.presentingViewController as? ViewController)?.webView.reload()
     }
     
@@ -82,14 +84,32 @@ class LinkedInService: NSObject, ILinkedInService{
     }
     
     func fetchUserData(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
-        
+        if let userAccessToken = self.userAccessToken(){
+            self.fetchLinkedInUserProfile(accessToken: userAccessToken, completion: completion)
+        }
+        else{
+            completion(nil, .sessionExpired)
+        }
     }
     
-    func userDidSignIn() -> Bool {
-        return false
+    func userAccessToken() -> String?{
+        var didSignIn: String?
+        if let url = URL(string: LinkedInConstants.redirect_url){
+            let urlRequest = URLRequest(url: url)
+            self.RequestForCallbackURL(request: urlRequest) { code in
+                if let code = code {
+                    self.linkedinRequestForAccessToken(authCode: code) { accessToken in
+                        if let accessToken = accessToken {
+                            didSignIn = accessToken
+                        }
+                    }
+                }
+            }
+        }
+        return didSignIn
     }
     
-    private func fetchLinkedInUserProfile(accessToken: String) {
+    private func fetchLinkedInUserProfile(accessToken: String, completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void) {
             let tokenURLFull = "https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))&oauth2_access_token=\(accessToken)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
             let verify: NSURL = NSURL(string: tokenURLFull!)!
             let request: NSMutableURLRequest = NSMutableURLRequest(url: verify as URL)
@@ -97,46 +117,36 @@ class LinkedInService: NSObject, ILinkedInService{
                 if error == nil {
                     let linkedInProfileModel = try? JSONDecoder().decode(LinkedInProfileModel.self, from: data!)
                     
-                    //AccessToken
-                    print("LinkedIn Access Token: \(accessToken)")
-                    
                     // LinkedIn Id
                     let linkedinId: String! = linkedInProfileModel?.id
-                    print("LinkedIn Id: \(linkedinId ?? "")")
 
                     // LinkedIn First Name
-                    let linkedinFirstName: String! = linkedInProfileModel?.firstName.localized.enUS
-                    print("LinkedIn First Name: \(linkedinFirstName ?? "")")
+                    let linkedinFirstName: String? = linkedInProfileModel?.firstName.localized.enUS
 
                     // LinkedIn Last Name
-                    let linkedinLastName: String! = linkedInProfileModel?.lastName.localized.enUS
-                    print("LinkedIn Last Name: \(linkedinLastName ?? "")")
+                    let linkedinLastName: String? = linkedInProfileModel?.lastName.localized.enUS
 
                     // LinkedIn Profile Picture URL
-                    let linkedinProfilePic: String!
+                    var linkedinProfilePic: String?
 
-                    /*
-                     Change row of the 'elements' array to get diffrent size of the profile url
-                     elements[0] = 100x100
-                     elements[1] = 200x200
-                     elements[2] = 400x400
-                     elements[3] = 800x800
-                    */
                     if let pictureUrls = linkedInProfileModel?.profilePicture.displayImage.elements[2].identifiers[0].identifier {
                         linkedinProfilePic = pictureUrls
-                    } else {
-                        linkedinProfilePic = "Not exists"
                     }
-                    print("LinkedIn Profile Avatar URL: \(linkedinProfilePic ?? "")")
 
                     // Get user's email address
-                    self.fetchLinkedInEmailAddress(accessToken: accessToken)
+                    self.fetchLinkedInEmailAddress(accessToken: accessToken){
+                        email in
+                        let userModel = UserModel(id: linkedinId, firstName: linkedinFirstName, lastName: linkedinLastName, email: email, mobileNo: nil, profileImageURL: linkedinProfilePic)
+                        completion(userModel, nil)
+                    }
                 }
+                completion(nil, .loginFailed)
             }
             task.resume()
         }
 
-    private func fetchLinkedInEmailAddress(accessToken: String) {
+    private func fetchLinkedInEmailAddress(accessToken: String, completion: @escaping(String?) -> Void) {
+            var linkedinEmail: String?
             let tokenURLFull = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))&oauth2_access_token=\(accessToken)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
             let verify: NSURL = NSURL(string: tokenURLFull!)!
             let request: NSMutableURLRequest = NSMutableURLRequest(url: verify as URL)
@@ -145,12 +155,8 @@ class LinkedInService: NSObject, ILinkedInService{
                     let linkedInEmailModel = try? JSONDecoder().decode(LinkedInEmailModel.self, from: data!)
 
                     // LinkedIn Email
-                    let linkedinEmail: String! = linkedInEmailModel?.elements[0].elementHandle.emailAddress
-                    print("LinkedIn Email: \(linkedinEmail ?? "")")
-
-                    DispatchQueue.main.async {
-                        self.presentingViewController?.performSegue(withIdentifier: "detailseg", sender: self)
-                    }
+                    linkedinEmail = linkedInEmailModel?.elements[0].elementHandle.emailAddress
+                    completion(linkedinEmail)
                 }
             }
             task.resume()
@@ -161,7 +167,11 @@ class LinkedInService: NSObject, ILinkedInService{
 extension LinkedInService: WKNavigationDelegate{
  
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        RequestForCallbackURL(request: navigationAction.request)
+        RequestForCallbackURL(request: navigationAction.request) { linkedInCode in
+            if let linkedInCode = linkedInCode {
+                self.handleAuth(linkedInAuthorizationCode: linkedInCode)
+            }
+        }
         
         //Close the View Controller after getting the authorization code
         if let urlStr = navigationAction.request.url?.absoluteString {
@@ -172,7 +182,7 @@ extension LinkedInService: WKNavigationDelegate{
         decisionHandler(.allow)
     }
 
-    func RequestForCallbackURL(request: URLRequest) {
+    private func RequestForCallbackURL(request: URLRequest, completion: @escaping(String?)->Void) {
         // Get the authorization code string after the '?code=' and before '&state='
         let requestURLString = (request.url?.absoluteString)! as String
         if requestURLString.hasPrefix(LinkedInConstants.redirect_url) {
@@ -181,18 +191,33 @@ extension LinkedInService: WKNavigationDelegate{
                     let linkedinCode = requestURLString[range.upperBound...]
                     if let range = linkedinCode.range(of: "&state=") {
                         let linkedinCodeFinal = linkedinCode[..<range.lowerBound]
-                        handleAuth(linkedInAuthorizationCode: String(linkedinCodeFinal))
+//                        handleAuth(linkedInAuthorizationCode: String(linkedinCodeFinal))
+                        completion("\(linkedinCodeFinal)")
                     }
                 }
             }
         }
+        completion(nil)
+    }
+    
+    
+
+    private func handleAuth(linkedInAuthorizationCode: String){
+        self.linkedinRequestForAccessToken(authCode: linkedInAuthorizationCode) { accessToken in
+            if let accessToken = accessToken {
+                self.fetchLinkedInUserProfile(accessToken: accessToken) { userModel, error in
+                    guard self.completionHandler != nil else{ return }
+                    self.completionHandler!(userModel, error)
+                }
+            }
+            else{
+                self.completionHandler!(nil, .sessionExpired)
+            }
+        }
     }
 
-    func handleAuth(linkedInAuthorizationCode: String) {
-        linkedinRequestForAccessToken(authCode: linkedInAuthorizationCode)
-    }
-
-    func linkedinRequestForAccessToken(authCode: String) {
+    private func linkedinRequestForAccessToken(authCode: String, completion: @escaping(String?) -> Void){
+        var accessToken: String?
         let grantType = "authorization_code"
 
         // Set the POST parameters.
@@ -208,14 +233,16 @@ extension LinkedInService: WKNavigationDelegate{
             if statusCode == 200 {
                 let results = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [AnyHashable: Any]
 
-                let accessToken = results?["access_token"] as! String
-                print("accessToken is: \(accessToken)")
+                accessToken = results?["access_token"] as? String
 
-                let expiresIn = results?["expires_in"] as! Int
-                print("expires in: \(expiresIn)")
+//                let expiresIn = results?["expires_in"] as! Int
 
-                // Get user's id, first name, last name, profile pic url
-                self.fetchLinkedInUserProfile(accessToken: accessToken)
+//                // Get user's id, first name, last name, profile pic url
+                guard accessToken != nil else {
+                    return
+                }
+                completion(accessToken)
+//                self.fetchLinkedInUserProfile(accessToken: accessToken)
             }
         }
         task.resume()
