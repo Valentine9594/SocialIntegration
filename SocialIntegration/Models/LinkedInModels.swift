@@ -23,8 +23,8 @@ struct LinkedInEmailModel: Codable {
 
 
 struct Element: Codable {
-    let elementHandle: Handle
-    let handle: String
+    let elementHandle: Handle?
+    let handle: String?
 
     enum CodingKeys: String, CodingKey {
         case elementHandle = "handle~"
@@ -34,23 +34,23 @@ struct Element: Codable {
 
 
 struct Handle: Codable {
-    let emailAddress: String
+    let emailAddress: String?
 }
 
 struct LinkedInProfileModel: Codable {
-    let firstName, lastName: StName
-    let profilePicture: ProfilePicture
-    let id: String
+    let firstName, lastName: StName?
+    let profilePicture: ProfilePicture?
+    let id: String?
 }
 
 // MARK: - StName
 struct StName: Codable {
-    let localized: Localized
+    let localized: Localized?
 }
 
 // MARK: - Localized
 struct Localized: Codable {
-    let enUS: String
+    let enUS: String?
 
     enum CodingKeys: String, CodingKey {
         case enUS = "en_US"
@@ -59,7 +59,7 @@ struct Localized: Codable {
 
 // MARK: - ProfilePicture
 struct ProfilePicture: Codable {
-    let displayImage: DisplayImage
+    let displayImage: DisplayImage?
 
     enum CodingKeys: String, CodingKey {
         case displayImage = "displayImage~"
@@ -78,5 +78,5 @@ struct ProfilePicElement: Codable {
 
 // MARK: - Identifier
 struct ProfilePicIdentifier: Codable {
-    let identifier: String
+    let identifier: String?
 }

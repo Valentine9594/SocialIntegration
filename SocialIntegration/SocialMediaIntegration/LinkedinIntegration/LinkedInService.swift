@@ -13,7 +13,6 @@ protocol ILinkedInService{
     func login(viewController: UIViewController, completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
     func logout()
     func fetchUserData(completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
-    func userAccessToken() -> String?
 }
 
 class LinkedInService: NSObject, ILinkedInService{
@@ -27,7 +26,7 @@ class LinkedInService: NSObject, ILinkedInService{
     
     func login(viewController: UIViewController, completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         self.presentingViewController = viewController
-        
+        clearCookie()
         let linkedInVC = UIViewController()
         let webView = popUpViewControllerWebView(linkedInVC: linkedInVC)
 
@@ -80,7 +79,7 @@ class LinkedInService: NSObject, ILinkedInService{
     }
     
     func logout() {
-        
+        clearCookie()
     }
     
     func fetchUserData(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
@@ -115,21 +114,22 @@ class LinkedInService: NSObject, ILinkedInService{
             let request: NSMutableURLRequest = NSMutableURLRequest(url: verify as URL)
             let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
                 if error == nil {
+                    guard data != nil else{ return }
                     let linkedInProfileModel = try? JSONDecoder().decode(LinkedInProfileModel.self, from: data!)
                     
                     // LinkedIn Id
                     let linkedinId: String! = linkedInProfileModel?.id
 
                     // LinkedIn First Name
-                    let linkedinFirstName: String? = linkedInProfileModel?.firstName.localized.enUS
+                    let linkedinFirstName: String? = linkedInProfileModel?.firstName?.localized?.enUS
 
                     // LinkedIn Last Name
-                    let linkedinLastName: String? = linkedInProfileModel?.lastName.localized.enUS
+                    let linkedinLastName: String? = linkedInProfileModel?.lastName?.localized?.enUS
 
                     // LinkedIn Profile Picture URL
                     var linkedinProfilePic: String?
 
-                    if let pictureUrls = linkedInProfileModel?.profilePicture.displayImage.elements[2].identifiers[0].identifier {
+                    if let pictureUrls = linkedInProfileModel?.profilePicture?.displayImage?.elements[2].identifiers[0].identifier {
                         linkedinProfilePic = pictureUrls
                     }
 
@@ -155,7 +155,7 @@ class LinkedInService: NSObject, ILinkedInService{
                     let linkedInEmailModel = try? JSONDecoder().decode(LinkedInEmailModel.self, from: data!)
 
                     // LinkedIn Email
-                    linkedinEmail = linkedInEmailModel?.elements[0].elementHandle.emailAddress
+                    linkedinEmail = linkedInEmailModel?.elements[0].elementHandle?.emailAddress
                     completion(linkedinEmail)
                 }
             }

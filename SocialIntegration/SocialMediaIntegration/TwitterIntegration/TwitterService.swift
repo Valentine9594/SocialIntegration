@@ -43,7 +43,7 @@ class TwitterService: NSObject, ITwitterService{
     }
     
     func logout() {
-        
+        clearCookie()
     }
     
     func isUserSignedIn() -> Bool{
