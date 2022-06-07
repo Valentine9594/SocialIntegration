@@ -8,35 +8,32 @@
 import Foundation
 import GoogleSignIn
 
-protocol IGoogleService{
-    func login(viewController: UIViewController, completion: @escaping(UserModel?, SocialMediaServiceError?)->Void)
-    func logout()
-    func fetchUserInfo(completion: @escaping(UserModel?, SocialMediaServiceError?)->Void)
-    func isSignedIn() -> Bool
-}
-
-class GoogleService: NSObject, IGoogleService{
+//MARK: Social Media Services for Google Account
+class GoogleService: NSObject, ITwitterAppleGoogleService{
     private var googleManager: GIDSignIn!
     static let shared = GoogleService()
     private var completionHandler: ((UserModel?, SocialMediaServiceError?) -> Void)?
+    let classTitle = "Google"
     
     private override init(){
         super.init()
         self.googleManager = GIDSignIn.sharedInstance()
     }
   
+    //MARK: Setting up App Delegate for Google Account in application
     func setupAppDelegate(){
         googleManager.clientID = "206094931678-v2br94sq2b9p34vq7q7hrg3vdplr7ppo.apps.googleusercontent.com"
         googleManager.delegate = self
         googleManager.restorePreviousSignIn()
     }
     
+    //MARK: Setting up App Delegate URL Options for Google Account in application
     func setupUrlOptions(url: URL) -> Bool{
         return googleManager.handle(url)
     }
     
-    func login(viewController: UIViewController, completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void) {
-        googleManager.presentingViewController = viewController
+    func login(fromViewController viewController: UIViewController,
+               completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {        googleManager.presentingViewController = viewController
         googleManager.signIn()
         self.completionHandler = completion
     }
@@ -58,7 +55,7 @@ class GoogleService: NSObject, IGoogleService{
         completion(nil, .loginFailed)
     }
     
-    func isSignedIn() -> Bool{
+    func isUserSignedIn() -> Bool{
 //        googleManager.currentUser?.userID != nil ? true : false
         googleManager.hasPreviousSignIn()
     }

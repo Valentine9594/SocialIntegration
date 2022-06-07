@@ -9,22 +9,18 @@
 import UIKit
 import WebKit
 
-protocol ILinkedInService{
-    func login(viewController: UIViewController, completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
-    func logout()
-    func fetchUserData(completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
-}
-
-class LinkedInService: NSObject, ILinkedInService{
+//MARK: Social Media Services for LinkedIn Account
+class LinkedInService: NSObject, ISocialService{
     static let shared = LinkedInService()
     private var presentingViewController: UIViewController?
     private var completionHandler: ((UserModel?, SocialMediaServiceError?) -> Void)?
+    let classTitle = "LinkedIn"
     
     private override init(){
         super.init()
     }
     
-    func login(viewController: UIViewController, completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
+    func login(fromViewController viewController: UIViewController, completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         self.presentingViewController = viewController
         clearCookie()
         let linkedInVC = UIViewController()
@@ -82,7 +78,7 @@ class LinkedInService: NSObject, ILinkedInService{
         clearCookie()
     }
     
-    func fetchUserData(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
+    func fetchUserInfo(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         if let userAccessToken = self.userAccessToken(){
             self.fetchLinkedInUserProfile(accessToken: userAccessToken, completion: completion)
         }

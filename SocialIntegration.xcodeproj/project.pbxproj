@@ -13,11 +13,12 @@
 		4A721AF92840E62100DEB231 /* LinkedInModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A721AF82840E62100DEB231 /* LinkedInModels.swift */; };
 		4AC9284E2845E96C009D0838 /* TwitterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC9284D2845E96C009D0838 /* TwitterService.swift */; };
 		4AC92850284632F0009D0838 /* LinkedInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC9284F284632F0009D0838 /* LinkedInService.swift */; };
+		4ACE1B992848F33600015C46 /* ISocialService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACE1B982848F33600015C46 /* ISocialService.swift */; };
 		4ACF475F28476855009487C1 /* FacebookModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF475E28476855009487C1 /* FacebookModels.swift */; };
 		4ACF47622847862D009487C1 /* UIViewcontroller+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF47612847862D009487C1 /* UIViewcontroller+extensions.swift */; };
 		4AE01702284200A000C04C8D /* TwitterModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE01701284200A000C04C8D /* TwitterModels.swift */; };
 		92730CCE283E0216002B0ED8 /* ProfileViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92730CCD283E0216002B0ED8 /* ProfileViewcontroller.swift */; };
-		92730CD3283E74E6002B0ED8 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92730CD2283E74E6002B0ED8 /* Models.swift */; };
+		92730CD3283E74E6002B0ED8 /* User Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92730CD2283E74E6002B0ED8 /* User Models.swift */; };
 		92730CD6283F586D002B0ED8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92730CD5283F586D002B0ED8 /* Constants.swift */; };
 		92FC56DC283B5C1600EB536A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FC56DB283B5C1600EB536A /* AppDelegate.swift */; };
 		92FC56DE283B5C1600EB536A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FC56DD283B5C1600EB536A /* SceneDelegate.swift */; };
@@ -36,12 +37,13 @@
 		4A721AF82840E62100DEB231 /* LinkedInModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedInModels.swift; sourceTree = "<group>"; };
 		4AC9284D2845E96C009D0838 /* TwitterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterService.swift; sourceTree = "<group>"; };
 		4AC9284F284632F0009D0838 /* LinkedInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedInService.swift; sourceTree = "<group>"; };
+		4ACE1B982848F33600015C46 /* ISocialService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISocialService.swift; sourceTree = "<group>"; };
 		4ACF475E28476855009487C1 /* FacebookModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookModels.swift; sourceTree = "<group>"; };
 		4ACF47612847862D009487C1 /* UIViewcontroller+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewcontroller+extensions.swift"; sourceTree = "<group>"; };
 		4AE01701284200A000C04C8D /* TwitterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterModels.swift; sourceTree = "<group>"; };
 		8E531B7511FC000DE650D936 /* Pods-SocialIntegration.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocialIntegration.debug.xcconfig"; path = "Target Support Files/Pods-SocialIntegration/Pods-SocialIntegration.debug.xcconfig"; sourceTree = "<group>"; };
 		92730CCD283E0216002B0ED8 /* ProfileViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewcontroller.swift; sourceTree = "<group>"; };
-		92730CD2283E74E6002B0ED8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		92730CD2283E74E6002B0ED8 /* User Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User Models.swift"; sourceTree = "<group>"; };
 		92730CD5283F586D002B0ED8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		92FC56D8283B5C1600EB536A /* SocialIntegration.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocialIntegration.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FC56DB283B5C1600EB536A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -104,7 +106,7 @@
 		92730CD1283E74D3002B0ED8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				92730CD2283E74E6002B0ED8 /* Models.swift */,
+				92730CD2283E74E6002B0ED8 /* User Models.swift */,
 				4A721AF82840E62100DEB231 /* LinkedInModels.swift */,
 				4AE01701284200A000C04C8D /* TwitterModels.swift */,
 				4ACF475E28476855009487C1 /* FacebookModels.swift */,
@@ -133,6 +135,7 @@
 		92730CDA283FA933002B0ED8 /* SocialMediaIntegration */ = {
 			isa = PBXGroup;
 			children = (
+				4ACE1B982848F33600015C46 /* ISocialService.swift */,
 				92FC56EF283B5C2400EB536A /* TwitterIntegration */,
 				92FC56F1283B5C7200EB536A /* LinkedinIntegration */,
 				92FC56F0283B5C5000EB536A /* FacebookIntegration */,
@@ -352,6 +355,7 @@
 			files = (
 				4A40D3FE2845069A005D4123 /* AppleService.swift in Sources */,
 				92FC56E0283B5C1600EB536A /* ViewController.swift in Sources */,
+				4ACE1B992848F33600015C46 /* ISocialService.swift in Sources */,
 				4A40D3FA2844C62E005D4123 /* FacebookService.swift in Sources */,
 				4ACF475F28476855009487C1 /* FacebookModels.swift in Sources */,
 				4AC9284E2845E96C009D0838 /* TwitterService.swift in Sources */,
@@ -362,7 +366,7 @@
 				92FC56DE283B5C1600EB536A /* SceneDelegate.swift in Sources */,
 				4A40D3FC2844E185005D4123 /* GoogleService.swift in Sources */,
 				4ACF47622847862D009487C1 /* UIViewcontroller+extensions.swift in Sources */,
-				92730CD3283E74E6002B0ED8 /* Models.swift in Sources */,
+				92730CD3283E74E6002B0ED8 /* User Models.swift in Sources */,
 				92730CD6283F586D002B0ED8 /* Constants.swift in Sources */,
 				4AC92850284632F0009D0838 /* LinkedInService.swift in Sources */,
 			);

@@ -8,27 +8,22 @@
 import Foundation
 import AuthenticationServices
 
-protocol IAppleService{
-    func login(viewController: UIViewController, completion: @escaping(UserModel?, SocialMediaServiceError?)->Void)
-    func logout()
-    func fetchUserData(completion: @escaping(UserModel?, SocialMediaServiceError?)->Void)
-    func isUserSignedIn() -> Bool
-}
-
-class AppleService: NSObject, IAppleService{
+//MARK: Social Media Services for Apple Account
+class AppleService: NSObject, ITwitterAppleGoogleService{
     private var appleManager: ASAuthorizationAppleIDProvider!
     static let shared = AppleService()
     private var userIdentifier: String?
     private var completionHandler: ((UserModel?, SocialMediaServiceError?) -> Void)?
-    private var presentingViewController: UIViewController!
+    private weak var presentingView: UIWindow!
+    let classTitle = "Apple"
     
     private override init(){
         super.init()
         appleManager = ASAuthorizationAppleIDProvider()
     }
     
-    func login(viewController: UIViewController, completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
-        self.presentingViewController = viewController
+    func login(fromViewController viewController: UIViewController, completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
+        self.presentingView = viewController.view.window
         let request = appleManager.createRequest()
         request.requestedScopes = [.fullName, .email]
         let authorizationcontroller = ASAuthorizationController(authorizationRequests: [request])
@@ -66,7 +61,7 @@ class AppleService: NSObject, IAppleService{
         clearCookie()
     }
     
-    func fetchUserData(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
+    func fetchUserInfo(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
 //        self.completionHandler = completion
 //        let appleUser = appleManager.credentialState(forUserID: "")
     }
@@ -95,7 +90,7 @@ extension AppleService: ASAuthorizationControllerDelegate, ASAuthorizationContro
     }
     
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return self.presentingViewController.view.window!
+        return self.presentingView
     }
 
 }

@@ -9,17 +9,13 @@ import Foundation
 import Swifter
 import AuthenticationServices
 
-protocol ITwitterService{
-    func login(viewController: UIViewController, completion: @escaping((UserModel?, SocialMediaServiceError?) -> Void))
-    func logout()
-    func fetchUserData(completion: @escaping(UserModel?, SocialMediaServiceError?) -> Void)
-    func isUserSignedIn() -> Bool
-}
-
-class TwitterService: NSObject, ITwitterService{
+//MARK: Social Media Services for Twitter Account
+class TwitterService: NSObject, ITwitterAppleGoogleService{
     private var twitterManager: Swifter?
     private var callbackURL: URL!
+    private var credentialToken: Credential.OAuthAccessToken?
     static let shared = TwitterService()
+    let classTitle = "Twitter"
     
     private override init(){
         super.init()
@@ -27,30 +23,34 @@ class TwitterService: NSObject, ITwitterService{
         callbackURL = URL(string: TwitterModel.callbackURL)!
     }
     
+    //MARK: Setting up App Delegate for Twitter Account in application
     func setupAppDelegateURLOptions(url: URL) -> Bool{
         return Swifter.handleOpenURL(url, callbackURL: self.callbackURL)
-//        return true
     }
     
+    //MARK: Setting up App Delegate for Twitter Account in application
     func setupSceneDelegate(url: URL){
         Swifter.handleOpenURL(url, callbackURL: self.callbackURL)
     }
     
-    func login(viewController: UIViewController, completion: @escaping ((UserModel?, SocialMediaServiceError?) -> Void)) {
+    
+    func login(fromViewController viewController: UIViewController, completion: @escaping ((UserModel?, SocialMediaServiceError?) -> Void)) {
         twitterManager?.authorize(withCallback: callbackURL, presentingFrom: viewController) { _, _ in
-            self.fetchUserData(completion: completion)
+            self.credentialToken = self.twitterManager?.client.credential?.accessToken
+            self.fetchUserInfo(completion: completion)
         }
     }
     
     func logout() {
+        self.credentialToken = nil
         clearCookie()
     }
     
     func isUserSignedIn() -> Bool{
-        twitterManager?.client.credential?.accessToken != nil ? true : false
+        return credentialToken != nil ? true : false
     }
     
-    func fetchUserData(completion: @escaping ((UserModel?, SocialMediaServiceError?) -> Void)) {
+    func fetchUserInfo(completion: @escaping ((UserModel?, SocialMediaServiceError?) -> Void)) {
         twitterManager?.verifyAccountCredentials(includeEntities: false, skipStatus: false, includeEmail: true) { jsonResponse in
             // Twitter Id
             var twitterid: String?

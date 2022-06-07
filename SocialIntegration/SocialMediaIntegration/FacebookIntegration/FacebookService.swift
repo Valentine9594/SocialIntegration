@@ -9,39 +9,18 @@ import Foundation
 import FBSDKCoreKit
 import FBSDKLoginKit
 
-enum SocialMediaServiceError: Error {
-    /** User denied the email permission. */
-    case emailDenied
-    /** User doesn't have an email associated with their account. */
-    case noEmail
-    /** User cancelled the operation. */
-    case cancelled
-    /** Attempt to login failed. */
-    case loginFailed
-    /** Attempt to fetch users information failed */
-    case graphAPIFailed
-    /** User's access token is no longer valid or they have been logged out.*/
-    case sessionExpired
-}
-
-protocol IFacebookService{
-    func login(fromViewController viewController: UIViewController,
-                        completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void)
-    func getUserInfo(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void)
-    func logout()
-    func getAccessToken() -> String?
-}
-
+//MARK: Social Media Services for Facebook Account
 class FacebookService: IFacebookService{
     private var loginManager: LoginManager
+    let classTitle = "Facebook"
     static let shared = FacebookService()
     
     private init() {
         loginManager = LoginManager()
     }
         
+    //MARK: Setting up App Delegate for Facebook Account in application
     func setupAppDelegate(application: UIApplication, launchOptions: [UIApplication.LaunchOptionsKey: Any]?){
-//        _ = FBLoginButton.self
         ApplicationDelegate.shared.application(application,  didFinishLaunchingWithOptions: launchOptions)
     }
     
@@ -54,8 +33,7 @@ class FacebookService: IFacebookService{
     }
     
     
-    func login(fromViewController viewController: UIViewController,
-               completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
+    func login(fromViewController viewController: UIViewController, completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         clearCookie()
         loginManager.logIn(permissions: ["public_profile", "email"], from: viewController, handler: {(loginResult, error) in
             if error != nil {
@@ -65,22 +43,29 @@ class FacebookService: IFacebookService{
                 completion(nil, SocialMediaServiceError.cancelled)
             }
             else {
-                self.getUserInfo(completion: completion)
+                self.fetchUserInfo(completion: completion)
             }
         })
     }
     
-    func getUserInfo(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
+    func fetchUserInfo(completion: @escaping (UserModel?, SocialMediaServiceError?) -> Void) {
         let requestFields = ["fields": "first_name, last_name, picture.type(large), email, id, gender, name"]
         let request = GraphRequest(graphPath: "me", parameters: requestFields, tokenString: getAccessToken(), version: nil, httpMethod: .get)
         request.start { connection, result, error in
             if error != nil{
                  completion(nil, .graphAPIFailed)
             } else {
-//                if let res = result as? Data{
-//                    let userInfoModel = try? JSONDecoder().decode(FacebookModel.self, from: res)
-//                    debugPrint("UserInfo Full: \(userInfoModel)")
-//                }
+                
+                
+                debugPrint("UserInfo: \(String(describing: result))")
+                debugPrint("Result: \(result!)")
+                if let res = result as? Data {
+                        debugPrint("Converting FB result to data")
+                        let userInfoModel = try? JSONDecoder().decode(FacebookModel.self, from: res)
+                    debugPrint("UserInfo Full: \(String(describing: userInfoModel))")
+                }
+                
+                
                 let userInfo = result as! [String:Any]
                 let userPic = userInfo["picture"] as! [String:Any]
                 let userPicData = userPic["data"] as! [String:Any]
@@ -93,15 +78,18 @@ class FacebookService: IFacebookService{
                     completion(nil, .noEmail)
                 }
             }
-        
-    }
-    }
-        func logout() {
-            loginManager.logOut()
-            clearCookie()
         }
+    }
+    
+    func logout() {
+        loginManager.logOut()
+        clearCookie()
+    }
     
     func getAccessToken() -> String?{
         AccessToken.current?.tokenString
+    }
+    func trdt() {
+        
     }
 }

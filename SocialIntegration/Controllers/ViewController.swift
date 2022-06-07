@@ -17,15 +17,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var linkedinLoginButton: UIButton!
     var webView: WKWebView!
     lazy var facebookService: IFacebookService = FacebookService.shared
-    lazy var googleService: IGoogleService = GoogleService.shared
-    lazy var appleService: IAppleService = AppleService.shared
-    lazy var twitterService: ITwitterService = TwitterService.shared
-    lazy var linkedInService: ILinkedInService = LinkedInService.shared
+    lazy var googleService: ITwitterAppleGoogleService = GoogleService.shared
+    lazy var appleService: ITwitterAppleGoogleService = AppleService.shared
+    lazy var twitterService: ITwitterAppleGoogleService = TwitterService.shared
+    lazy var linkedInService: ISocialService = LinkedInService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-//        setupIFAlreadyLoggedIn()
     }
 
     private func setupUI(){
@@ -38,16 +37,15 @@ class ViewController: UIViewController {
         linkedinLoginButton.layer.cornerRadius = allCornerRadius
         twitterLoginButton.layer.cornerRadius = allCornerRadius
         
-        self.setLoginButtonTitle(loginButton: facebookLoginButton, loginButtonName: "Facebook", showLogin: (facebookService.getAccessToken() == nil))
-        self.setLoginButtonTitle(loginButton: googleLoginButton, loginButtonName: "Google", showLogin: !googleService.isSignedIn())
-        self.setLoginButtonTitle(loginButton: twitterLoginButton, loginButtonName: "Twitter", showLogin: !twitterService.isUserSignedIn())
-        self.setLoginButtonTitle(loginButton: appleLoginButton, loginButtonName: "Apple", showLogin: !appleService.isUserSignedIn())
-        self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: true)
+        self.setLoginButtonTitle(loginButton: facebookLoginButton, loginButtonName: FacebookService.shared.classTitle, showLogin: (facebookService.getAccessToken() == nil))
+        self.setLoginButtonTitle(loginButton: googleLoginButton, loginButtonName: GoogleService.shared.classTitle, showLogin: !googleService.isUserSignedIn())
+        self.setLoginButtonTitle(loginButton: twitterLoginButton, loginButtonName: TwitterService.shared.classTitle, showLogin: !twitterService.isUserSignedIn())
+        self.setLoginButtonTitle(loginButton: appleLoginButton, loginButtonName: AppleService.shared.classTitle, showLogin: !appleService.isUserSignedIn())
+        self.setLoginButtonTitle(loginButton: linkedinLoginButton, loginButtonName: LinkedInService.shared.classTitle, showLogin: true)
     }
     
     @IBAction func clickedAppleLogin(_ sender: UIButton) {
-        debugPrint("User Signed In: \(appleService.isUserSignedIn())")
-        appleService.login(viewController: self) { [weak self] userModel, error in
+        appleService.login(fromViewController: self) { [weak self] userModel, error in
             guard self != nil else{ return }
             if let user = userModel {
                 self?.navigateToProfileViewController(userModel: user)
@@ -58,17 +56,16 @@ class ViewController: UIViewController {
         }
     }
     
-    
     @IBAction func clickedGoogleSignIn(_ sender: UIButton) {
-        if googleService.isSignedIn(){
+        if googleService.isUserSignedIn(){
             googleService.logout()
-            setLoginButtonTitle(loginButton: googleLoginButton, loginButtonName: "Google", showLogin: true)
+            setLoginButtonTitle(loginButton: googleLoginButton, loginButtonName: GoogleService.shared.classTitle, showLogin: true)
         }
         else{
-            googleService.login(viewController: self) { [weak self] userModel, error in
+            googleService.login(fromViewController: self) { [weak self] userModel, error in
                 guard self != nil else{ return }
                 if let user = userModel{
-                    self?.setLoginButtonTitle(loginButton: self?.googleLoginButton, loginButtonName: "Google", showLogin: false)
+                    self?.setLoginButtonTitle(loginButton: self?.googleLoginButton, loginButtonName: GoogleService.shared.classTitle, showLogin: false)
                     self?.navigateToProfileViewController(userModel: user)
                 }
                 else if error != nil{
@@ -79,25 +76,25 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clickedLinkedInLoginButton(_ sender: UIButton) {
-            linkedInService.login(viewController: self) { [weak self] userModel, error in
+        linkedInService.login(fromViewController: self) { [weak self] userModel, error in
                 guard self != nil else { return }
                 if let user = userModel{
-//                    self?.setLoginButtonTitle(loginButton: self?.linkedinLoginButton, loginButtonName: "LinkedIn", showLogin: false)
                     self?.navigateToProfileViewController(userModel: user)
                 }
             }
     }
     
     @IBAction func clickedTwitterLoginButton(_ sender: UIButton) {
+        debugPrint("Twitter Login: \(twitterService.isUserSignedIn())")
         if twitterService.isUserSignedIn(){
             twitterService.logout()
-            setLoginButtonTitle(loginButton: twitterLoginButton, loginButtonName: "Twitter", showLogin: true)
+            setLoginButtonTitle(loginButton: twitterLoginButton, loginButtonName: TwitterService.shared.classTitle, showLogin: true)
         }
         else{
-            twitterService.login(viewController: self) { [weak self] userModel, error in
+            twitterService.login(fromViewController: self) { [weak self] userModel, error in
                 guard self != nil else{ return }
                 if let user = userModel {
-                    self?.setLoginButtonTitle(loginButton: self?.twitterLoginButton, loginButtonName: "Twitter", showLogin: false)
+                    self?.setLoginButtonTitle(loginButton: self?.twitterLoginButton, loginButtonName: TwitterService.shared.classTitle, showLogin: false)
                     self?.navigateToProfileViewController(userModel: user)
                 }
                 else if error != nil{
@@ -111,13 +108,14 @@ class ViewController: UIViewController {
     @IBAction func clickedFacebookButton(_ sender: UIButton) {
         if facebookService.getAccessToken() != nil{
             facebookService.logout()
-            self.setLoginButtonTitle(loginButton: facebookLoginButton, loginButtonName: "Facebook", showLogin: true)
+            self.setLoginButtonTitle(loginButton: facebookLoginButton, loginButtonName: FacebookService.shared.classTitle, showLogin: true)
         }
         else{
             facebookService.login(fromViewController: self) { [weak self] userModel, error in
                 guard self != nil else{ return }
                 if let user = userModel {
-                    self?.setLoginButtonTitle(loginButton: self?.facebookLoginButton, loginButtonName: "Facebook", showLogin: false)
+                    self?.setLoginButtonTitle(loginButton: self?.facebookLoginButton, loginButtonName: FacebookService.shared.classTitle, showLogin: false)
+                    
                     self?.navigateToProfileViewController(userModel: user)
                 } else if error != nil{
                     self?.displayError(message: error?.localizedDescription)
